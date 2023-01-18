@@ -1,0 +1,7 @@
+### Post_Data
+POST http://localhost:2500/post-data/Express.JS?lang=javascript
+Content-Type: application/json
+
+{
+"name":"Mani"
+}
