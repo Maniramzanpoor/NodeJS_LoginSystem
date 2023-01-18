@@ -19,14 +19,26 @@ app.use(
   }
 );
 
-app.post("/postnames/:name", (req, res) => {
-  res.json({
-    body: req.body,
-    query: req.query,
-    params: req.params,
-    onlineUesers: req.online_users,
-    RequestData: req.request_date,
-  });
+app.post("/postnames/:name", (req, res, next) => {
+  try {
+    if (Object.key(req.body).length > 0) {
+      return res.json({
+        body: req.body,
+        query: req.query,
+        params: req.params,
+        onlineUesers: req.online_users,
+        RequestData: req.request_date,
+      });
+    }
+    // next();
+    return res.json({
+      status: 500,
+      message: "Body is empty",
+    });
+  } catch (error) {
+    // next();
+    return error;
+  }
 });
 
 app.get("/", (req, res) => {
