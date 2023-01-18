@@ -38,7 +38,7 @@ app.get("/users", (req, res) => {
     lastname: "rmp",
   });
 });
-// 404 route
+// 404 routes
 app.use("*", (req, res, next) => {
   res.status(404).json({
     status: 404,
