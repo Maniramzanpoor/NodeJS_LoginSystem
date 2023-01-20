@@ -30,33 +30,40 @@ app.post("/postnames/:name", (req, res, next) => {
         RequestData: req.request_date,
       });
     }
-    // next();
-    return res.json({
-      status: 500,
-      message: "Body is empty",
-    });
+    throw { status: 400, messag: "request body cannot be empty" };
   } catch (error) {
-    // next();
-    return error;
+    next(error);
   }
 });
 
 app.get("/", (req, res) => {
   res.send("HELLO WORLD");
 });
+
 app.get("/users", (req, res) => {
   res.json({
     name: "mani",
     lastname: "rmp",
   });
 });
-// 404 routes
-app.use("*", (req, res, next) => {
+
+app.use((req, res, next) => {
   res.status(404).json({
     status: 404,
+    success: false,
     message: "Route Not Found",
   });
 });
+app.use((error, req, res, next) => {
+  const status = error?.status || error?.code || 500;
+  const message = error?.message || "Internal server Errors";
+  return res.status(status).json({
+    status,
+    success: false,
+    message,
+  });
+});
+
 http
   .createServer(app)
   .listen(2500, () => console.log("Server run at port 2500"));
