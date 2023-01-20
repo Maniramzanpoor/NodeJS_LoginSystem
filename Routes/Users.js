@@ -2,7 +2,8 @@ const router = require("express").Router();
 const { default: axios } = require("axios");
 const { UserModel } = require("../Models/UserSchema");
 const { HashString } = require("../utils/HashString");
-const { isValidObjectId, ObjectId } = require("mongoose");
+const { isValidObjectId } = require("mongoose");
+
 router.post("/create", async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -36,6 +37,7 @@ router.post("/create", async (req, res, next) => {
     next(error);
   }
 });
+
 router.get("/", async (req, res, next) => {
   const users = await UserModel.find(
     {},
@@ -45,12 +47,28 @@ router.get("/", async (req, res, next) => {
   });
   res.json({ users });
 });
+
 router.get("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!isValidObjectId(id)) throw { status: 404, message: "Id isnot Valid" };
     const user = await UserModel.findOne({ _id: id });
     res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!isValidObjectId(id))
+      throw { status: 400, message: "ObjectId is notvalid" };
+    const user = await UserModel.findById(id);
+    if (!user) throw { status: 404, message: "User Not Found" };
+    const result = await UserModel.deleteOne({ _id: id });
+    if (result.deletedCount > 0)
+      return res.json({ status: 200, success: true, message: "User Deleted " });
+    throw { status: 400, message: "User deleted have an error" };
   } catch (error) {
     next(error);
   }
