@@ -73,4 +73,47 @@ router.delete("/:id", async (req, res, next) => {
     next(error);
   }
 });
+router.put("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { username, email } = req.body;
+    let data = { ...req.body };
+    let UserFindResult;
+    const userNameRegexp = /^[a-zA-Z\-]+$/;
+    const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (username && !userNameRegexp.test(username)) {
+      throw { status: 400, message: "username is not true" };
+    }
+    if (email && !emailRegexp.test(email)) {
+      throw { status: 400, message: "email is not true" };
+    }
+
+    if (username) UserFindResult = await UserModel.findOne({ username });
+    if (UserFindResult) throw { status: 400, message: "Username In use" };
+    if (email) UserFindResult = await UserModel.findOne({ email });
+    if (UserFindResult) throw { status: 400, message: "email In use" };
+
+    if (!isValidObjectId(id))
+      throw { status: 400, message: "ObjectId is notvalid" };
+    const user = await UserModel.findById(id);
+    if (!user) throw { status: 404, message: "User Not Found" };
+
+    const result = await UserModel.updateOne(
+      { _id: id },
+      {
+        username,
+        email,
+      }
+    );
+    if (result.modifiedCount > 0)
+      return res.json({
+        status: 200,
+        success: true,
+        message: "user is updated",
+      });
+    throw { status: 400, message: "User isnt Updated" };
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;
