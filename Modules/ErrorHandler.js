@@ -6,7 +6,7 @@ function NotFoundRoute(req, res, next) {
   });
 }
 function ExpressErrorHandler(Error, req, res, next) {
-  const status = Error?.status || Error?.code || 500;
+  const status = Error?.status || 500;
   const message = Error?.message || "Internal server Errors";
   return res.status(status).json({
     status,

@@ -115,11 +115,20 @@ async function UpdateUser(req, res, next) {
     next(error);
   }
 }
-
+async function UpdateProfileImage(req, res, next) {
+  try {
+    return res.json({
+      file: JSON.stringify(req.file),
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 module.exports = {
   CreateUser,
   GetUsers,
   GetUserData,
   DeleteUser,
   UpdateUser,
+  UpdateProfileImage,
 };
