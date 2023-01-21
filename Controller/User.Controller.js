@@ -1,6 +1,7 @@
 const { UserModel } = require("../Models/UserSchema");
 const { HashString } = require("../utils/HashString");
 const { isValidObjectId } = require("mongoose");
+const path = require("path");
 
 async function CreateUser(req, res, next) {
   try {
@@ -50,7 +51,11 @@ async function GetUserData(req, res, next) {
     const { id } = req.params;
     if (!isValidObjectId(id)) throw { status: 404, message: "Id isnot Valid" };
     const user = await UserModel.findOne({ _id: id });
-    res.json(user);
+    if (!user) throw {status:404,message:"User with this is NotFound"}
+    user.UserImage_Url = `${req.protocol}://${req.get(
+      "host"
+    )}${user.UserImage_Url.replace(/[\\\\.]gm/, "/")}`;
+    return res.json(user);
   } catch (error) {
     next(error);
   }
@@ -117,6 +122,20 @@ async function UpdateUser(req, res, next) {
 }
 async function UpdateProfileImage(req, res, next) {
   try {
+    const id = req.params.id;
+    if (!isValidObjectId(id))
+      throw { status: 404, message: "ObjectId is notValid" };
+    const prefixPath = path.join(__dirname, ".."); // get the image adress
+    let image;
+    if (req.file) {
+      image = req.file.path.substring(prefixPath.length);
+    } else throw { status: 400, message: "Please Select One file" };
+    const result = await UserModel.updateOne(
+      { _id: id },
+      { $set: { UserImage_Url: image } }
+    );
+    if (result.matchedCount <= 0)
+      throw { status: 400, message: "User Updated have an Error" };
     return res.json({
       file: JSON.stringify(req.file),
     });

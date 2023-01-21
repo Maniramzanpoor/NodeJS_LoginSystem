@@ -5,7 +5,7 @@ const storage = multer.diskStorage({
     const year = new Date().getFullYear();
     const month = new Date().getMonth();
     const day = new Date().getDate();
-    const fileAdress = `${__dirname}/../uploads/images/${year}/${month}/${day}`;
+    const fileAdress = `${__dirname}/../Public/uploads/images/${year}/${month}/${day}`;
     require("fs").mkdirSync(fileAdress, { recursive: true });
     callback(null, fileAdress);
   },

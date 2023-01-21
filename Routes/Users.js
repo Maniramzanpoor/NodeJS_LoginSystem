@@ -11,9 +11,7 @@ const {
 const { UploadImage } = require("../utils/UploadImage");
 
 router.post("/create", CreateUser);
-
 router.get("/", GetUsers);
-
 router.get("/:id", GetUserData);
 router.delete("/:id", DeleteUser);
 router.put("/:id", UpdateUser);

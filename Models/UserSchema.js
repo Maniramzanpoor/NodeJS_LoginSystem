@@ -8,6 +8,7 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     phone: { type: String },
     age: { type: Number },
+    UserImage_Url: { type: String, default: "default.jpg" },
   },
   {
     timestamps: true,
