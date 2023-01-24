@@ -9,8 +9,8 @@ const UserSchema = new Schema(
     phone: { type: String },
     age: { type: Number },
     UserImage_Url: { type: String, default: "default.jpg" },
+    Token: { type: String, default: "" },
     role: { type: String, default: "USER", required: true },
-    token: { type: String, default: "" },
   },
   {
     timestamps: true,

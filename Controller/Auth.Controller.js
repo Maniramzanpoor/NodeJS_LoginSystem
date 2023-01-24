@@ -38,17 +38,20 @@ async function login(req, res, next) {
     const { username, password } = req.body;
     let user;
     user = await UserModel.findOne({ username });
-    if (!user) throw { status: "username or password is not true" };
+    if (!user)
+      throw { status: 401, message: "username or password is not true" };
 
     if (!CompareHashedPassord(password, user.password))
-      throw { status: "username or password is not true" };
-    const token = jwtTokenGenerator(user);
-    user.token = token;
+      throw { status: 401, message: "username or password is not true" };
+    let token = jwtTokenGenerator(user);
+    console.log(token);
+    user.Token = token;
     user.save();
     return res.status(200).json({
       status: 200,
       succes: true,
       message: "welcome to your account",
+      token,
     });
   } catch (error) {
     next(error);
