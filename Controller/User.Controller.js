@@ -7,11 +7,7 @@ async function CreateUser(req, res, next) {
   try {
     const { username, email, password } = req.body;
     let user;
-    const userNameRegexp = /^[a-zA-Z\-]+$/;
     const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!userNameRegexp.test(username)) {
-      throw { status: 400, message: "username is not true" };
-    }
     if (!emailRegexp.test(email)) {
       throw { status: 400, message: "email is not true" };
     }
@@ -51,7 +47,7 @@ async function GetUserData(req, res, next) {
     const { id } = req.params;
     if (!isValidObjectId(id)) throw { status: 404, message: "Id isnot Valid" };
     const user = await UserModel.findOne({ _id: id });
-    if (!user) throw {status:404,message:"User with this is NotFound"}
+    if (!user) throw { status: 404, message: "User with this is NotFound" };
     user.UserImage_Url = `${req.protocol}://${req.get(
       "host"
     )}${user.UserImage_Url.replace(/[\\\\.]gm/, "/")}`;
